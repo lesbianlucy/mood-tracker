@@ -9,18 +9,78 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      issues: write
     steps:
-      - name: Label by size
-        uses: pascalgn/size-label-action@v0.5.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Ensure size labels exist
+        uses: actions/github-script@v7
         with:
-          sizes: >
-            {
-              "XS": 0,
-              "S": 20,
-              "M": 100,
-              "L": 250,
-              "XL": 500,
-              "XXL": 1000
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = [
+              { name: 'size/XS', color: 'bfd4f2', description: '0-19 changed lines' },
+              { name: 'size/S', color: 'c2e0c6', description: '20-99 changed lines' },
+              { name: 'size/M', color: 'fef2c0', description: '100-249 changed lines' },
+              { name: 'size/L', color: 'f9d0c4', description: '250-499 changed lines' },
+              { name: 'size/XL', color: 'f7c6c7', description: '500-999 changed lines' },
+              { name: 'size/XXL', color: 'e99695', description: '1000+ changed lines' },
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label.name,
+                    color: label.color,
+                    description: label.description,
+                  });
+                } else {
+                  throw error;
+                }
+              }
             }
+
+      - name: Apply size label
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const changedLines = pr.additions + pr.deletions;
+
+            const thresholds = [
+              { name: 'size/XS', max: 19 },
+              { name: 'size/S', max: 99 },
+              { name: 'size/M', max: 249 },
+              { name: 'size/L', max: 499 },
+              { name: 'size/XL', max: 999 },
+              { name: 'size/XXL', max: Number.POSITIVE_INFINITY },
+            ];
+
+            const labelToApply = thresholds.find((entry) => changedLines <= entry.max).name;
+
+            const existingLabels = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+            });
+
+            const labels = existingLabels.data
+              .map((label) => label.name)
+              .filter((name) => !name.startsWith('size/'));
+
+            labels.push(labelToApply);
+
+            await github.rest.issues.setLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels,
+            });
