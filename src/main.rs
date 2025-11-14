@@ -1,18 +1,9 @@
-mod auth;
-mod config;
-mod db;
-mod error;
-mod models;
-mod routes;
-mod services;
-mod state;
-
-use crate::config::AppConfig;
-use crate::db::init_pool;
-use crate::error::AppError;
-use crate::routes::create_router;
-use crate::services::{git::GitService, storage::StorageService};
-use crate::state::AppState;
+use mood::config::AppConfig;
+use mood::db::init_pool;
+use mood::error::AppError;
+use mood::routes::create_router;
+use mood::services::{git::GitService, storage::StorageService};
+use mood::state::AppState;
 use tokio::net::TcpListener;
 use tracing::{error, info};
 
