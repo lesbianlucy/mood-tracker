@@ -1,13 +1,15 @@
 use askama::Template;
 use askama_axum::IntoResponse as AskamaTemplateResponse;
 use axum::{
+    extract::State,
     response::{IntoResponse, Redirect},
     routing::{get, post},
-    Router,
+    Form, Router,
 };
+use axum_extra::extract::cookie::CookieJar;
+use serde::Deserialize;
 
-use crate::error::AppError;
-use crate::state::AppState;
+use crate::{auth, error::AppError, state::AppState};
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -33,8 +35,23 @@ async fn login_form() -> impl IntoResponse {
     AskamaTemplateResponse::into_response(LoginTemplate)
 }
 
-async fn login_submit() -> Result<Redirect, AppError> {
-    Err(AppError::NotImplemented)
+#[derive(Deserialize)]
+struct LoginForm {
+    identifier: String,
+    password: String,
+}
+
+async fn login_submit(
+    State(state): State<AppState>,
+    jar: CookieJar,
+    Form(form): Form<LoginForm>,
+) -> Result<(CookieJar, Redirect), AppError> {
+    let user = auth::authenticate_user(&state, &form.identifier, &form.password).await?;
+    let session_id = auth::create_session(&state, user.id).await?;
+    Ok((
+        auth::apply_session_cookie(jar, &session_id),
+        Redirect::to("/me"),
+    ))
 }
 
 #[derive(Template)]
@@ -45,10 +62,39 @@ async fn register_form() -> impl IntoResponse {
     AskamaTemplateResponse::into_response(RegisterTemplate)
 }
 
-async fn register_submit() -> Result<Redirect, AppError> {
-    Err(AppError::NotImplemented)
+#[derive(Deserialize)]
+struct RegisterForm {
+    username: String,
+    email: String,
+    password: String,
+    password_confirm: String,
 }
 
-async fn logout() -> Result<Redirect, AppError> {
-    Err(AppError::NotImplemented)
+async fn register_submit(
+    State(state): State<AppState>,
+    jar: CookieJar,
+    Form(form): Form<RegisterForm>,
+) -> Result<(CookieJar, Redirect), AppError> {
+    if form.password != form.password_confirm {
+        return Err(AppError::BadRequest(
+            "Passwörter stimmen nicht überein.".into(),
+        ));
+    }
+
+    let user = auth::register_user(&state, &form.username, &form.email, &form.password).await?;
+    let session_id = auth::create_session(&state, user.id).await?;
+    Ok((
+        auth::apply_session_cookie(jar, &session_id),
+        Redirect::to("/me"),
+    ))
+}
+
+async fn logout(
+    State(state): State<AppState>,
+    jar: CookieJar,
+) -> Result<(CookieJar, Redirect), AppError> {
+    if let Some(cookie) = jar.get(auth::SESSION_COOKIE) {
+        auth::destroy_session(&state, cookie.value()).await?;
+    }
+    Ok((auth::clear_session_cookie(jar), Redirect::to("/")))
 }
