@@ -10,6 +10,8 @@ use thiserror::Error;
 pub enum AppError {
     #[error("config error: {0}")]
     Config(String),
+    #[error("bad request: {0}")]
+    BadRequest(String),
     #[error(transparent)]
     Io(#[from] std::io::Error),
     #[error(transparent)]
@@ -36,6 +38,7 @@ impl IntoResponse for AppError {
             | AppError::Database(_)
             | AppError::Git(_)
             | AppError::Other(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::BadRequest(_) => StatusCode::BAD_REQUEST,
             AppError::NotFound => StatusCode::NOT_FOUND,
             AppError::Unauthorized => StatusCode::UNAUTHORIZED,
             AppError::Forbidden => StatusCode::FORBIDDEN,

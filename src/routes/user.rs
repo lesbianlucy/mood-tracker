@@ -1,13 +1,15 @@
 use askama::Template;
 use askama_axum::IntoResponse as AskamaTemplateResponse;
 use axum::{
+    extract::{Path, State},
     response::{IntoResponse, Redirect},
     routing::{get, post},
-    Router,
+    Form, Router,
 };
-use chrono::Utc;
+use chrono::{Local, Utc};
+use serde::Deserialize;
 
-use crate::{auth::CurrentUser, error::AppError, state::AppState};
+use crate::{auth::CurrentUser, error::AppError, models::checkin::Checkin, state::AppState};
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -51,16 +53,26 @@ struct CheckinsListTemplate {
     checkins: Vec<CheckinSummary>,
 }
 
-async fn checkins_list(current: CurrentUser) -> Result<impl IntoResponse, AppError> {
-    current.require_user()?;
-    let items = vec![CheckinSummary {
-        id: "demo".into(),
-        timestamp: Utc::now().to_rfc3339(),
-        mood: 1,
-        high_level: 2,
-    }];
+async fn checkins_list(
+    State(state): State<AppState>,
+    current: CurrentUser,
+) -> Result<impl IntoResponse, AppError> {
+    let user = current.require_user()?;
+    let mut items = state.storage.load_user_checkins(&user.uuid).await?;
+    items.sort_by(|a, b| b.timestamp.cmp(&a.timestamp));
+    let summaries = items
+        .into_iter()
+        .map(|checkin| CheckinSummary {
+            id: checkin.id,
+            timestamp: format_timestamp(checkin.timestamp),
+            mood: checkin.mood,
+            high_level: checkin.high_level,
+        })
+        .collect();
     Ok(AskamaTemplateResponse::into_response(
-        CheckinsListTemplate { checkins: items },
+        CheckinsListTemplate {
+            checkins: summaries,
+        },
     ))
 }
 
@@ -73,9 +85,34 @@ async fn checkin_new_form(current: CurrentUser) -> Result<impl IntoResponse, App
     Ok(AskamaTemplateResponse::into_response(CheckinNewTemplate))
 }
 
-async fn checkin_new_submit(current: CurrentUser) -> Result<Redirect, AppError> {
-    current.require_user()?;
-    Err(AppError::NotImplemented)
+#[derive(Deserialize)]
+struct CheckinForm {
+    mood: i32,
+    high_level: i32,
+    safety_answer: Option<String>,
+    notes: Option<String>,
+}
+
+async fn checkin_new_submit(
+    State(state): State<AppState>,
+    current: CurrentUser,
+    Form(form): Form<CheckinForm>,
+) -> Result<Redirect, AppError> {
+    let user = current.require_user()?;
+    let mut checkin = Checkin::new(&user.uuid);
+    checkin.mood = form.mood.clamp(-5, 5);
+    checkin.high_level = form.high_level.clamp(0, 10);
+    checkin.safety_answer = normalize_optional(form.safety_answer);
+    checkin.notes = normalize_optional(form.notes);
+    checkin.feels_safe = checkin
+        .safety_answer
+        .as_ref()
+        .map(|answer| !answer.to_lowercase().contains("nein"))
+        .unwrap_or(true);
+
+    let saved = state.storage.append_checkin(&user.uuid, checkin).await?;
+
+    Ok(Redirect::to(&format!("/me/checkins/{}", saved.id)))
 }
 
 #[derive(Template)]
@@ -87,15 +124,27 @@ struct CheckinDetailTemplate {
     raw_json: String,
 }
 
-async fn checkin_detail(current: CurrentUser) -> Result<impl IntoResponse, AppError> {
-    current.require_user()?;
-    let raw = serde_json::json!({"id": "demo", "mood": 0, "high_level": 0, "notes": "Demo"});
+async fn checkin_detail(
+    State(state): State<AppState>,
+    current: CurrentUser,
+    Path(checkin_id): Path<String>,
+) -> Result<impl IntoResponse, AppError> {
+    let user = current.require_user()?;
+    let items = state.storage.load_user_checkins(&user.uuid).await?;
+    let checkin = items
+        .into_iter()
+        .find(|c| c.id == checkin_id)
+        .ok_or(AppError::NotFound)?;
+    let raw_json =
+        serde_json::to_string_pretty(&checkin).map_err(|err| AppError::Other(err.into()))?;
     Ok(AskamaTemplateResponse::into_response(
         CheckinDetailTemplate {
-            mood: 0,
-            high_level: 0,
-            notes: "Demo".into(),
-            raw_json: serde_json::to_string_pretty(&raw).unwrap_or_else(|_| "{}".into()),
+            mood: checkin.mood,
+            high_level: checkin.high_level,
+            notes: checkin
+                .notes
+                .unwrap_or_else(|| "Keine Notizen hinterlegt 🌱".into()),
+            raw_json,
         },
     ))
 }
@@ -135,4 +184,21 @@ async fn settings_form(current: CurrentUser) -> Result<impl IntoResponse, AppErr
 async fn settings_submit(current: CurrentUser) -> Result<Redirect, AppError> {
     current.require_user()?;
     Err(AppError::NotImplemented)
+}
+
+fn normalize_optional(input: Option<String>) -> Option<String> {
+    input.and_then(|value| {
+        let trimmed = value.trim();
+        if trimmed.is_empty() {
+            None
+        } else {
+            Some(trimmed.to_string())
+        }
+    })
+}
+
+fn format_timestamp(ts: chrono::DateTime<Utc>) -> String {
+    ts.with_timezone(&Local)
+        .format("%d.%m.%Y %H:%M")
+        .to_string()
 }
