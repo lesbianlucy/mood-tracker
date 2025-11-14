@@ -67,6 +67,7 @@ Cozy Rust webapp (German UI copy) for mood tracking, drug/trip journaling, and s
 - **New Account Label** (`.github/workflows/new-account-label.yml`): labels PRs from GitHub accounts younger than 30 days.
 - **Review Rating** (`.github/workflows/review-rating.yml`): posts a review effort rating based on changed line count.
 - **Code Quality Report** (`.github/workflows/code-quality.yml`): re-runs fmt/clippy/tests and leaves a sticky summary comment (with pass/fail status).
+- **Femboy Praise** (`.github/workflows/pr-femboy-praise.yml`): when `Code Quality Report` finishes green, Astolfo drops a celebratory meme/comment on the PR.
 
 ## Next Steps
 - Implement auth flows (register/login) and real session middleware.
