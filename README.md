@@ -64,6 +64,7 @@ Cozy Rust webapp (German UI copy) for mood tracking, drug/trip journaling, and s
 - **PR Category Check** (`.github/workflows/pr-category.yml`): ensures each PR description declares a `Category:`.
 - **Breaking Change Label** (`.github/workflows/breaking-change.yml`): syncs the `breaking-change` label when the PR title/body mentions `BREAKING CHANGE`.
 - **First-Time Contributor Welcome** (`.github/workflows/first-time-contributor.yml`): greets new contributors with guidance.
+- **New Account Label** (`.github/workflows/new-account-label.yml`): labels PRs from GitHub accounts younger than 30 days.
 
 ## Next Steps
 - Implement auth flows (register/login) and real session middleware.
