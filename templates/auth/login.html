@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Einloggen ✨{% endblock %}
+{% block content %}
+<form method="post" action="/login" class="bg-white rounded-3xl shadow p-8 space-y-4">
+    <h2 class="text-2xl font-semibold">Hey, schön dich zu sehen 💕</h2>
+    <label class="block">
+        <span>Nutzername oder E-Mail</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="text" name="identifier" required>
+    </label>
+    <label class="block">
+        <span>Passwort</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="password" name="password" required>
+    </label>
+    <button class="w-full rounded-full bg-pink-500 text-white py-3" type="submit">Einloggen ✨</button>
+</form>
+{% endblock %}

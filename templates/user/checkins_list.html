@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Deine Check-ins 📖{% endblock %}
+{% block content %}
+<section class="space-y-2">
+    <h2 class="text-2xl font-semibold">Verlauf deiner Gefühle 💞</h2>
+    <ul class="space-y-2">
+        {% for checkin in checkins %}
+        <li class="bg-white rounded-3xl shadow p-4 flex justify-between">
+            <div>
+                <p class="font-bold">{{ checkin.timestamp }} · Mood {{ checkin.mood }}</p>
+                <p class="text-sm text-pink-500">High {{ checkin.high_level }} / 10</p>
+            </div>
+            <a class="text-pink-500" href="/me/checkins/{{ checkin.id }}">Ansehen →</a>
+        </li>
+        {% else %}
+        <li class="text-center text-pink-400">Noch keine Check-ins 🌱</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

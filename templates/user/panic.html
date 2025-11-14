@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Panic & Hilfe 😰{% endblock %}
+{% block content %}
+<section class="bg-white rounded-3xl shadow p-8 space-y-4 text-center">
+    <h2 class="text-3xl font-semibold">Hey, du bist hier sicher 💖</h2>
+    <p>Atme tief ein (4 Sekunden), halte (4), aus (6). Ich bin bei dir.</p>
+    <form method="post" action="/me/panic/trigger">
+        <button class="w-full rounded-full bg-red-500 text-white py-3" type="submit">Alarm auslösen 🚨</button>
+    </form>
+</section>
+{% endblock %}

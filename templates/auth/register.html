@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Registrieren 💖{% endblock %}
+{% block content %}
+<form method="post" action="/register" class="bg-white rounded-3xl shadow p-8 space-y-4">
+    <h2 class="text-2xl font-semibold">Willkommen im Mood-Club 💗</h2>
+    <label class="block">
+        <span>Nutzername</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="text" name="username" required>
+    </label>
+    <label class="block">
+        <span>E-Mail</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="email" name="email" required>
+    </label>
+    <label class="block">
+        <span>Passwort</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="password" name="password" required>
+    </label>
+    <label class="block">
+        <span>Passwort bestätigen</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="password" name="password_confirm" required>
+    </label>
+    <button class="w-full rounded-full bg-purple-500 text-white py-3" type="submit">Los geht's 🌸</button>
+</form>
+{% endblock %}

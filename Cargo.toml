@@ -1,0 +1,29 @@
+[package]
+name = "mood"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { version = "0.7", features = ["macros"] }
+axum-extra = { version = "0.9", features = ["cookie-private"] }
+tokio = { version = "1.39", features = ["rt-multi-thread", "macros"] }
+askama = { version = "0.12", features = ["with-axum"] }
+askama_axum = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_with = "3"
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "uuid", "chrono", "macros"] }
+argon2 = "0.5"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde", "clock"] }
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+matrix-sdk = { version = "0.7" }
+git2 = "0.18"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["fs"] }
+dotenvy = "0.15"
+anyhow = "1"
+async-trait = "0.1"
+sha2 = "0.10"

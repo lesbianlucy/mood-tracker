@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Kawaii Mood Journal ✨{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="bg-pink-50 min-h-screen">
+<nav class="p-4 flex justify-between text-pink-900">
+    <div class="font-bold">Kawaii Mood Journal ✨</div>
+    <div>
+        {% block nav %}{% endblock %}
+    </div>
+</nav>
+<main class="max-w-4xl mx-auto p-4">
+    {% block content %}{% endblock %}
+</main>
+<footer class="text-center text-xs text-pink-400 p-6">
+    Kein Ersatz für medizinische Hilfe. Bei Notfällen wähle bitte 112. 💖
+</footer>
+</body>
+</html>

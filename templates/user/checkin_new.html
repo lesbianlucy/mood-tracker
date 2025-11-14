@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Neues Check-in 🌸{% endblock %}
+{% block content %}
+<form method="post" action="/me/checkins/new" class="bg-white rounded-3xl shadow p-8 space-y-4">
+    <h2 class="text-2xl font-semibold">Wie fühlst du dich? 🌈</h2>
+    <label class="block">
+        <span>Mood (-5 .. +5)</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="number" min="-5" max="5" name="mood" required>
+    </label>
+    <label class="block">
+        <span>High-Level (0 .. 10)</span>
+        <input class="mt-1 w-full rounded-full border px-4 py-2" type="number" min="0" max="10" name="high_level" required>
+    </label>
+    <label class="block">
+        <span>Sicherheitsgefühl</span>
+        <textarea class="mt-1 w-full rounded-3xl border px-4 py-2" name="safety_answer"></textarea>
+    </label>
+    <label class="block">
+        <span>Notizen</span>
+        <textarea class="mt-1 w-full rounded-3xl border px-4 py-2" name="notes"></textarea>
+    </label>
+    <button class="w-full rounded-full bg-pink-500 text-white py-3" type="submit">Speichern 💖</button>
+</form>
+{% endblock %}

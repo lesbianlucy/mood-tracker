@@ -1,0 +1,7 @@
+/target
+/.env
+ai/
+/.idea
+.DS_Store
+/node_modules
+/static/app.css
