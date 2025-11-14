@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use axum_extra::extract::cookie::Key;
 use sha2::{Digest, Sha512};
 

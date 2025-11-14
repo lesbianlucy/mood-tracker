@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use tracing::info;
 
 use crate::{

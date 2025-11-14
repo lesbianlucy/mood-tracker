@@ -1,10 +1,13 @@
+#![allow(dead_code)]
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use std::fmt;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 pub enum UserRole {
+    #[default]
     #[serde(rename = "user")]
     User,
     #[serde(rename = "admin")]
@@ -23,12 +26,6 @@ impl UserRole {
 impl fmt::Display for UserRole {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_str())
-    }
-}
-
-impl Default for UserRole {
-    fn default() -> Self {
-        UserRole::User
     }
 }
 
