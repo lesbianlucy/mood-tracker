@@ -1,0 +1,77 @@
+name: PR Breaking Change Label
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  breaking_change:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Sync breaking-change label
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const text = `${pr.title}\n${pr.body || ''}`;
+            const hasBreaking = /BREAKING CHANGE/i.test(text);
+            const labelName = 'breaking-change';
+
+            async function ensureLabel() {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: labelName,
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: labelName,
+                    color: 'b60205',
+                    description: 'Indicates a breaking change',
+                  });
+                } else {
+                  throw error;
+                }
+              }
+            }
+
+            async function addLabel() {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: [labelName],
+              });
+            }
+
+            async function removeLabel() {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  name: labelName,
+                });
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
+              }
+            }
+
+            await ensureLabel();
+            if (hasBreaking) {
+              core.notice('Detected "BREAKING CHANGE" – label applied.');
+              await addLabel();
+            } else {
+              core.info('No breaking change marker found – removing label if present.');
+              await removeLabel();
+            }
