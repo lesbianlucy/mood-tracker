@@ -1,0 +1,43 @@
+name: Review Rating
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  review_score:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Compute review rating
+        id: rating
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const changedLines = pr.additions + pr.deletions;
+
+            let rating = 'C';
+            if (changedLines <= 50) rating = 'A+';
+            else if (changedLines <= 150) rating = 'A';
+            else if (changedLines <= 300) rating = 'B';
+            else if (changedLines <= 600) rating = 'C';
+            else if (changedLines <= 1000) rating = 'D';
+            else rating = 'E';
+
+            core.setOutput('rating', rating);
+            core.setOutput('lines', changedLines.toString());
+
+      - name: Post review rating
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: review-rating
+          number: ${{ github.event.pull_request.number }}
+          message: |
+            ### Review Rating ✨
+            - Changed lines: **${{ steps.rating.outputs.lines }}**
+            - Estimated review effort: **${{ steps.rating.outputs.rating }}**
+
+            _Smaller changes help the cozy reviewer floofs stay happy 💖_

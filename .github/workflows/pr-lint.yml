@@ -1,0 +1,51 @@
+name: PR Gatekeepers
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  semantic_title:
+    name: Ensure semantic PR title
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            chore
+            docs
+            feat
+            fix
+            refactor
+            revert
+            test
+          scopes: |
+            core
+            auth
+            ui
+            infra
+            deps
+            workflows
+          subjectPattern: ^(?![A-Z]).+$
+
+  checklist_comment:
+    name: Ensure PR checklist
+    runs-on: ubuntu-latest
+    needs: semantic_title
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post checklist comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: checklist
+          message: |
+            ### PR Checklist ✅
+            - [ ] Title follows `type(scope): subject` (lowercase subject, no trailing period)
+            - [ ] Description links related issues / Matrix discussions
+            - [ ] Added tests or noted why not applicable
+            - [ ] Verified `cargo fmt`, `cargo clippy`, `cargo test`

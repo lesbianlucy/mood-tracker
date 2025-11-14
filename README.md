@@ -57,6 +57,18 @@ Cozy Rust webapp (German UI copy) for mood tracking, drug/trip journaling, and s
    ```
 7. **Tailwind build (upcoming):** placeholder CSS sits in `static/app.css`; Node/Tailwind CLI wiring will be added later.
 
+## Continuous Integration
+- **Rust CI** (`.github/workflows/ci.yml`): runs `cargo fmt`, `cargo clippy`, and `cargo test` on pushes/PRs with caching.
+- **PR Gatekeepers** (`.github/workflows/pr-lint.yml`): enforces semantic PR titles and posts a checklist reminder.
+- **PR Size Labels** (`.github/workflows/pr-size.yml`): automatically tags pull requests with size labels (XS–XXL).
+- **PR Category Label** (`.github/workflows/pr-category.yml`): infers category labels (`category/<type>`) straight from the semantic PR title.
+- **Breaking Change Label** (`.github/workflows/breaking-change.yml`): syncs the `breaking-change` label when the PR title/body mentions `BREAKING CHANGE`.
+- **First-Time Contributor Welcome** (`.github/workflows/first-time-contributor.yml`): greets new contributors with guidance.
+- **New Account Label** (`.github/workflows/new-account-label.yml`): labels PRs from GitHub accounts younger than 30 days.
+- **Review Rating** (`.github/workflows/review-rating.yml`): posts a review effort rating based on changed line count.
+- **Code Quality Report** (`.github/workflows/code-quality.yml`): re-runs fmt/clippy/tests and leaves a sticky summary comment (with pass/fail status).
+- **Femboy Praise** (`.github/workflows/pr-femboy-praise.yml`): when `Code Quality Report` finishes green, Astolfo drops a celebratory meme/comment on the PR.
+
 ## Next Steps
 - Implement auth flows (register/login) and real session middleware.
 - Fill the JSON storage + Matrix service with full logic.

@@ -1,6 +1,7 @@
 /target
 /.env
 ai/
+AGENTS.md
 /.idea
 .DS_Store
 /node_modules
