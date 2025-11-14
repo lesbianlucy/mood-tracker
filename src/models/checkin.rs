@@ -16,6 +16,8 @@ pub struct Checkin {
     pub notes: Option<String>,
     pub drugs: Vec<DrugEntry>,
     pub auto_notifications: AutoNotifications,
+    #[serde(default)]
+    pub status_tags: Vec<String>,
 }
 
 impl Checkin {
@@ -31,7 +33,26 @@ impl Checkin {
             notes: None,
             drugs: Vec::new(),
             auto_notifications: AutoNotifications::default(),
+            status_tags: Vec::new(),
         }
+    }
+
+    pub fn safety_answer_text(&self) -> &str {
+        self.safety_answer
+            .as_deref()
+            .unwrap_or("Kein Safety-Check angegeben 🌱")
+    }
+
+    pub fn notes_text(&self) -> Option<&str> {
+        self.notes.as_deref()
+    }
+
+    pub fn has_notes(&self) -> bool {
+        self.notes.is_some()
+    }
+
+    pub fn notes_display(&self) -> &str {
+        self.notes.as_deref().unwrap_or("")
     }
 }
 
@@ -49,6 +70,24 @@ pub struct DrugEntry {
     pub route: Option<String>,
     pub start_time: Option<DateTime<Utc>>,
     pub notes: Option<String>,
+}
+
+impl DrugEntry {
+    pub fn route_text(&self) -> &str {
+        self.route.as_deref().unwrap_or("n/a")
+    }
+
+    pub fn notes_text(&self) -> Option<&str> {
+        self.notes.as_deref()
+    }
+
+    pub fn has_notes(&self) -> bool {
+        self.notes.is_some()
+    }
+
+    pub fn notes_display(&self) -> &str {
+        self.notes.as_deref().unwrap_or("")
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -1,9 +1,52 @@
 {% extends "base.html" %}
 {% block title %}Check-in Detail ✨{% endblock %}
 {% block content %}
-<section class="bg-white rounded-3xl shadow p-8 space-y-2">
-    <h2 class="text-2xl font-semibold">Mood {{ mood }} · High {{ high_level }}</h2>
-    <p>{{ notes }}</p>
-    <pre class="bg-pink-50 rounded-3xl p-4 text-sm">{{ raw_json }}</pre>
+<section class="card space-y-4">
+    <div class="flex items-center justify-between">
+        <h1 class="section-title">Check-in vom {{ checkin.timestamp }}</h1>
+        <a href="/me/checkins" class="link">Zurück zur Liste</a>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="stat-pill">
+            <span class="text-xs uppercase tracking-widest text-rose-400">Stimmung</span>
+            <p class="text-2xl text-rose-700">{{ checkin.mood }}</p>
+        </div>
+        <div class="stat-pill">
+            <span class="text-xs uppercase tracking-widest text-indigo-400">Rausch</span>
+            <p class="text-2xl text-indigo-600">{{ checkin.high_level }}/10</p>
+        </div>
+    </div>
+    {% if checkin.has_status_tags %}
+        <div class="flex flex-wrap gap-2">
+            {% for tag in checkin.status_tags %}
+            <span class="chip">{{ tag }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="bg-rose-50/70 rounded-2xl p-4 text-sm text-rose-700">
+        {{ checkin.safety_answer }}
+    </div>
+    {% if checkin.has_notes %}
+        <p class="text-rose-600 whitespace-pre-wrap">{{ checkin.notes }}</p>
+    {% endif %}
+    {% if checkin.has_drugs %}
+        <div class="space-y-3">
+            {% for drug in checkin.drugs %}
+                <div class="drug-card">
+                    <p class="font-semibold text-rose-700">{{ drug.substance }} – {{ drug.dose }}</p>
+                    <p class="text-xs text-rose-500">Route: {{ drug.route }}</p>
+                    {% if drug.has_notes %}<p class="text-sm text-rose-600">{{ drug.notes }}</p>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if checkin.has_notifications %}
+        <div class="alert alert-info">
+            Nachricht gesendet an:
+            {% for contact in checkin.notifications %}
+                {% if loop.index0 > 0 %}, {% endif %}{{ contact }}
+            {% endfor %}
+        </div>
+    {% endif %}
 </section>
 {% endblock %}

@@ -1,0 +1,46 @@
+<div class="mood-widget">
+    <div class="flex flex-col md:flex-row gap-6 items-center">
+        <div class="flex-1 space-y-3">
+            <p class="text-sm uppercase tracking-[0.3em] text-rose-400">Mood</p>
+            <div class="mood-scale">
+                {% for mark in scale %}
+                <span class="mood-dot {% if mark.active %}active{% endif %}">
+                    <span>{{ mark.value }}</span>
+                </span>
+                {% endfor %}
+            </div>
+            <p class="text-3xl font-display text-rose-700">
+                {{ mood_text }}
+                <span class="text-base text-rose-400">
+                    {% if has_danger %}{{ danger_text }}{% else %}Wie fühlst du dich?{% endif %}
+                </span>
+            </p>
+        </div>
+        <div class="flex-1 space-y-3">
+            <p class="text-sm uppercase tracking-[0.3em] text-indigo-400">Rausch-Level</p>
+            <div class="high-gauge">
+                <div class="bar" style="width:{{ high_percent }}%"></div>
+            </div>
+            <p class="text-indigo-600 font-semibold">{{ high_text }} – Wie stark ballert es gerade? 🌀</p>
+        </div>
+    </div>
+    <div class="sparkline">
+        <svg viewBox="0 0 240 60" preserveAspectRatio="none">
+            {% for point in sparkline %}
+                <circle cx="{{ point.x }}" cy="{{ point.y }}" r="2" class="spark-dot" />
+                {% if point.has_prev %}
+                    <line x1="{{ point.prev_x }}" y1="{{ point.prev_y }}" x2="{{ point.x }}" y2="{{ point.y }}" class="spark-line" />
+                {% endif %}
+            {% endfor %}
+        </svg>
+        <div class="spark-labels">
+            {% for point in sparkline %}
+                <span>{{ point.label }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="flex flex-wrap gap-3 pt-4">
+        <a href="/me/checkins/new" class="cta-primary">Jetzt Check-in speichern 🌸</a>
+        <a href="/me/panic" class="cta-secondary">Panic / Hilfe 😰</a>
+    </div>
+</div>

@@ -2,7 +2,7 @@ use mood::config::AppConfig;
 use mood::db::init_pool;
 use mood::error::AppError;
 use mood::routes::create_router;
-use mood::services::{git::GitService, storage::StorageService};
+use mood::services::{git::GitService, matrix::MatrixService, storage::StorageService};
 use mood::state::AppState;
 use tokio::net::TcpListener;
 use tracing::{error, info};
@@ -26,7 +26,15 @@ async fn main() -> Result<(), AppError> {
     let git = GitService::new(config.repo_root.clone());
     git.init_repo_if_needed()?;
 
-    let state = AppState::new(config.clone(), db.clone(), storage.clone(), git.clone());
+    let matrix = MatrixService::new();
+
+    let state = AppState::new(
+        config.clone(),
+        db.clone(),
+        storage.clone(),
+        git.clone(),
+        matrix.clone(),
+    );
 
     let app = create_router(state.clone());
 

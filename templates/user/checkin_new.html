@@ -1,24 +1,91 @@
 {% extends "base.html" %}
 {% block title %}Neues Check-in 🌸{% endblock %}
 {% block content %}
-<form method="post" action="/me/checkins/new" class="bg-white rounded-3xl shadow p-8 space-y-4">
-    <h2 class="text-2xl font-semibold">Wie fühlst du dich? 🌈</h2>
-    <label class="block">
-        <span>Mood (-5 .. +5)</span>
-        <input class="mt-1 w-full rounded-full border px-4 py-2" type="number" min="-5" max="5" name="mood" required>
-    </label>
-    <label class="block">
-        <span>High-Level (0 .. 10)</span>
-        <input class="mt-1 w-full rounded-full border px-4 py-2" type="number" min="0" max="10" name="high_level" required>
-    </label>
-    <label class="block">
-        <span>Sicherheitsgefühl</span>
-        <textarea class="mt-1 w-full rounded-3xl border px-4 py-2" name="safety_answer"></textarea>
-    </label>
-    <label class="block">
-        <span>Notizen</span>
-        <textarea class="mt-1 w-full rounded-3xl border px-4 py-2" name="notes"></textarea>
-    </label>
-    <button class="w-full rounded-full bg-pink-500 text-white py-3" type="submit">Speichern 💖</button>
-</form>
+<section class="card space-y-6">
+    <div class="flex items-center justify-between">
+        <h1 class="section-title">Neues Mood-Check-in 🌸</h1>
+        <p class="text-sm text-rose-400">Danke, dass du ehrlich zu dir bist 💕</p>
+    </div>
+    <form method="post" class="space-y-6" id="checkin-form">
+        <label class="form-field">
+            <span>Stimmung (–5 bis +5)</span>
+            <input type="range" name="mood" min="-5" max="5" value="0" oninput="this.nextElementSibling.textContent = this.value">
+            <span class="text-sm text-rose-500">0</span>
+        </label>
+        <label class="form-field">
+            <span>Rausch-Level (0 bis 10)</span>
+            <input type="range" name="high_level" min="0" max="10" value="0" oninput="this.nextElementSibling.textContent = this.value + '/10'">
+            <span class="text-sm text-indigo-500">0/10</span>
+        </label>
+        <div class="form-field">
+            <span>Safety-Check</span>
+            <div class="grid md:grid-cols-3 gap-3">
+                <label class="radio-card">
+                    <input type="radio" name="safety_answer" value="ok" checked>
+                    <span>Mir geht's gut 💖</span>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="safety_answer" value="high">
+                    <span>Ich bin sehr high, aber komme klar 🌀</span>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="safety_answer" value="panic">
+                    <span>Ich glaube, ich brauche Hilfe 😰</span>
+                </label>
+            </div>
+        </div>
+        <div class="form-field">
+            <span>Status-Chips</span>
+            <div class="flex flex-wrap gap-2">
+                {% for option in status_options %}
+                    <label class="chip-select">
+                        <input type="checkbox" name="status_tags" value="{{ option.value }}">
+                        <span>{{ option.label }} <small>{{ option.description }}</small></span>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        <label class="form-field">
+            <span>Notizen / Gefühle ✍️</span>
+            <textarea name="notes" rows="4" placeholder="Körpergefühl, Visuals, Gedanken..."></textarea>
+        </label>
+        <div class="form-field" id="drug-list">
+            <span>Substanzen</span>
+            <div class="drug-entry">
+                <input type="text" name="drugs_substance" placeholder="Substanz" required>
+                <input type="text" name="drugs_dose" placeholder="Dosis">
+                <select name="drugs_route">
+                    <option value="">Route</option>
+                    {% for route in route_options %}
+                        <option value="{{ route }}">{{ route }}</option>
+                    {% endfor %}
+                </select>
+                <input type="datetime-local" name="drugs_start_time">
+                <textarea name="drugs_notes" rows="2" placeholder="Notizen"></textarea>
+            </div>
+        </div>
+        <button type="button" class="cta-secondary" onclick="addDrugEntry()">Drug hinzufügen ➕</button>
+        <button type="submit" class="cta-primary w-full">Check-in speichern 🌼</button>
+    </form>
+</section>
+<script>
+function addDrugEntry() {
+    const container = document.getElementById('drug-list');
+    const block = document.createElement('div');
+    block.className = 'drug-entry';
+    block.innerHTML = `
+        <input type="text" name="drugs_substance" placeholder="Substanz" required>
+        <input type="text" name="drugs_dose" placeholder="Dosis">
+        <select name="drugs_route">
+            <option value="">Route</option>
+            {% for route in route_options %}
+            <option value="{{ route }}">{{ route }}</option>
+            {% endfor %}
+        </select>
+        <input type="datetime-local" name="drugs_start_time">
+        <textarea name="drugs_notes" rows="2" placeholder="Notizen"></textarea>
+    `;
+    container.appendChild(block);
+}
+</script>
 {% endblock %}

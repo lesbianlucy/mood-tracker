@@ -28,7 +28,10 @@ pub struct UserConfig {
     pub homeserver_url: String,
     pub matrix_user_id: String,
     pub matrix_access_token: String,
+    #[serde(default)]
+    pub matrix_device_id: Option<String>,
     pub primary_contact: Option<String>,
+    #[serde(default)]
     pub emergency_contacts: Vec<String>,
     pub auto_notify_on_low_mood: bool,
     pub auto_notify_threshold: i32,
@@ -42,10 +45,21 @@ impl Default for UserConfig {
             homeserver_url: "https://matrix.org".into(),
             matrix_user_id: "@cutie:matrix.org".into(),
             matrix_access_token: "SECRET".into(),
+            matrix_device_id: None,
             primary_contact: None,
             emergency_contacts: Vec::new(),
             auto_notify_on_low_mood: true,
             auto_notify_threshold: 1,
         }
+    }
+}
+
+impl UserConfig {
+    pub fn for_new_user(username: &str) -> Self {
+        let mut cfg = Self::default();
+        cfg.username = username.to_string();
+        cfg.display_name = username.to_string();
+        cfg.matrix_user_id = format!("@{username}:matrix.org");
+        cfg
     }
 }

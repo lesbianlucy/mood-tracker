@@ -1,0 +1,6 @@
+{
+  "default_low_mood_threshold": 1,
+  "default_auto_notify_on_low_mood": true,
+  "low_mood_message_template": "Hey 💕, hier ist der Mood-Tracker von {username}. Stimmung: {mood}, Rausch: {high_level}/10 am {timestamp}. Nur ein kleiner Hinweis, dass ein kurzer Check-in gut tun könnte 🌸",
+  "panic_message_template": "ALARM 💖: {username} hat in der App 'Ich brauche Hilfe' gedrückt. Stimmung: {mood} / Rausch: {high_level}/10. Vielleicht magst du kurz nach ihnen schauen 💕"
+}

@@ -1,12 +1,30 @@
 {% extends "base.html" %}
-{% block title %}Willkommen 💖{% endblock %}
+{% block title %}Cozy Moodspace 💖{% endblock %}
 {% block content %}
-<section class="bg-white rounded-3xl shadow p-8 text-center">
-    <h1 class="text-3xl font-semibold mb-4">Dein cozy Mood- und Trip-Journal 🌸</h1>
-    <p class="text-pink-600 mb-8">Stimmung tracken, Trips reflektieren und Safety-Button bereit halten – alles auf Deutsch, alles kawaii.</p>
-    <div class="flex flex-col md:flex-row gap-4 justify-center">
-        <a href="/register" class="px-6 py-3 rounded-full bg-pink-500 text-white text-lg">Registrieren 💖</a>
-        <a href="/login" class="px-6 py-3 rounded-full bg-purple-400 text-white text-lg">Einloggen ✨</a>
+<section class="bg-white/80 rounded-3xl shadow-xl p-8 text-center space-y-6 border border-rose-100">
+    <p class="text-sm uppercase tracking-[0.2em] text-rose-400">Safety · Mood · Queer Joy</p>
+    <h1 class="text-4xl font-display text-rose-700 drop-shadow-sm">
+        Kawaii Mood Tracker & Psychonaut Journal 🌈
+    </h1>
+    <p class="text-rose-600 max-w-2xl mx-auto leading-relaxed">
+        Tracke liebevoll deine Stimmung, Trips und Safety-Checks – mit Matrix-Alarmknopf, großen Buttons für High-Brains
+        und ganz viel queerem Zuspruch. Kein Druck, nur sanfte Erinnerungen ✨
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center pt-2">
+        {% if logged_in %}
+            <a href="/me" class="cta-primary">Zurück ins Moodnest 💕</a>
+        {% else %}
+            <a href="/register" class="cta-primary">Registrieren 💖</a>
+            <a href="/login" class="cta-secondary">Einloggen ✨</a>
+        {% endif %}
     </div>
+    <div class="grid md:grid-cols-3 gap-4 text-left text-sm text-rose-500">
+        <div class="feature-card">HTSDOF-inspirierter Mood-Slider mit Sparkline-Throwback 💞</div>
+        <div class="feature-card">Psychonaut Trip-Journal mit JSON-Historie und Git-Autocommits 🧠</div>
+        <div class="feature-card">Matrix SOS für Trusted Contacts + Panic-Logs 🌐</div>
+    </div>
+    <p class="text-xs text-rose-400">
+        Kein medizinischer Rat. In Krisen bitte medizinische Fachpersonen oder 112 kontaktieren.
+    </p>
 </section>
 {% endblock %}

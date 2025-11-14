@@ -1,11 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Admin · System{% endblock %}
+{% block title %}System / Git{% endblock %}
 {% block content %}
-<section class="bg-white rounded-3xl shadow p-8 space-y-4">
-    <h2 class="text-2xl font-semibold">Git & Systemstatus</h2>
-    <p class="text-sm text-pink-400">Infos kommen später.</p>
-    <form method="post" action="/admin/system/commit">
-        <button class="rounded-full bg-pink-500 text-white px-4 py-2" type="submit">Manuellen Commit auslösen 💾</button>
+<section class="card space-y-4">
+    <h1 class="section-title">Git Status</h1>
+    <p class="text-sm text-rose-500">Branch: {{ branch }}</p>
+    {% if has_commit %}
+        <div class="bg-rose-50 rounded-2xl p-4 text-sm">
+            <p class="font-semibold">{{ commit.message }}</p>
+            <p class="text-rose-500 text-xs">{{ commit.hash }} · {{ commit.timestamp }}</p>
+        </div>
+    {% endif %}
+    <p class="text-sm">Änderungen unter ai/: {% if pending_ai %}<span class="text-amber-600">ja</span>{% else %}<span class="text-emerald-600">nein</span>{% endif %}</p>
+    <form method="post">
+        <button class="cta-secondary">Manuellen Commit auslösen 💾</button>
     </form>
 </section>
 {% endblock %}

@@ -10,6 +10,7 @@ use axum::{extract::FromRequestParts, http::request::Parts};
 use axum_extra::extract::cookie::{Cookie, CookieJar, SameSite};
 use chrono::Utc;
 use sqlx::{sqlite::SqliteQueryResult, Row};
+use tracing::{info, warn};
 use uuid::Uuid;
 
 use crate::{error::AppError, models::user::UserRole, state::AppState};
@@ -134,6 +135,24 @@ pub async fn register_user(
 
     let id = insert_result.last_insert_rowid();
 
+    let _ = state
+        .storage
+        .ensure_user_scaffold(&uuid, username)
+        .await
+        .map_err(|err| {
+            warn!(%uuid, %username, "Konnte Benutzerverzeichnis nicht vorbereiten: {err}");
+            err
+        })?;
+
+    if let Err(err) = state
+        .git
+        .commit_ai_changes(&format!("feat: neuer Account für {username} 💖"))
+    {
+        warn!(%username, "Git Commit nach Registrierung fehlgeschlagen: {err}");
+    }
+
+    info!(%username, %uuid, "Neuer Benutzer registriert");
+
     Ok(AuthenticatedUser {
         id,
         uuid,
@@ -185,6 +204,8 @@ pub async fn authenticate_user(
         .bind(id)
         .execute(&state.db)
         .await?;
+
+    info!(user_id = id, %username, "Login erfolgreich");
 
     Ok(AuthenticatedUser {
         id,
