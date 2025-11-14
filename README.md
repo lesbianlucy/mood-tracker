@@ -65,6 +65,8 @@ Cozy Rust webapp (German UI copy) for mood tracking, drug/trip journaling, and s
 - **Breaking Change Label** (`.github/workflows/breaking-change.yml`): syncs the `breaking-change` label when the PR title/body mentions `BREAKING CHANGE`.
 - **First-Time Contributor Welcome** (`.github/workflows/first-time-contributor.yml`): greets new contributors with guidance.
 - **New Account Label** (`.github/workflows/new-account-label.yml`): labels PRs from GitHub accounts younger than 30 days.
+- **Review Rating** (`.github/workflows/review-rating.yml`): posts a review effort rating based on changed line count.
+- **Code Quality Report** (`.github/workflows/code-quality.yml`): re-runs fmt/clippy/tests and leaves a sticky summary comment (with pass/fail status).
 
 ## Next Steps
 - Implement auth flows (register/login) and real session middleware.
