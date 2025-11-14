@@ -1,0 +1,247 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #7c2d4d;
+}
+body {
+  margin: 0;
+}
+.font-display {
+  font-family: 'Poppins', 'Inter', sans-serif;
+}
+.card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 28px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(244, 114, 182, 0.2);
+}
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #db2777;
+  margin: 0;
+}
+.cta-primary,
+.cta-secondary,
+.cta-danger,
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+.cta-primary,
+.cta-secondary,
+.cta-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.9rem 1.8rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+}
+.cta-primary {
+  background: linear-gradient(120deg, #fb7185, #f472b6);
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(251, 113, 133, 0.35);
+}
+.cta-secondary {
+  background: rgba(255, 255, 255, 0.8);
+  color: #7c2d4d;
+  border: 1px solid rgba(251, 113, 133, 0.4);
+}
+.cta-danger {
+  background: linear-gradient(120deg, #f43f5e, #fb7185);
+  color: white;
+}
+.chip,
+.chip-select span {
+  border-radius: 999px;
+  padding: 0.2rem 0.9rem;
+  background: rgba(244, 114, 182, 0.15);
+  color: #be185d;
+  font-size: 0.85rem;
+}
+.chip-danger {
+  background: rgba(248, 113, 113, 0.15);
+  color: #b91c1c;
+}
+.chip-select input {
+  display: none;
+}
+.chip-select input:checked + span {
+  background: rgba(79, 70, 229, 0.15);
+  color: #4f46e5;
+}
+.stat-pill {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(244, 114, 182, 0.2);
+}
+.form-grid {
+  display: grid;
+  gap: 1rem;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+.form-field input,
+.form-field textarea,
+.form-field select {
+  border-radius: 16px;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  padding: 0.65rem 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+.radio-card {
+  border: 1px solid rgba(244, 114, 182, 0.3);
+  border-radius: 18px;
+  padding: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.radio-card input {
+  accent-color: #f472b6;
+}
+.drug-entry {
+  display: grid;
+  gap: 0.5rem;
+}
+.alert {
+  padding: 0.9rem 1.2rem;
+  border-radius: 18px;
+  font-size: 0.9rem;
+}
+.alert-error {
+  background: rgba(248, 113, 113, 0.15);
+  color: #b91c1c;
+}
+.alert-success {
+  background: rgba(134, 239, 172, 0.2);
+  color: #15803d;
+}
+.alert-info {
+  background: rgba(129, 140, 248, 0.15);
+  color: #3730a3;
+}
+.badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+.badge-success {
+  background: rgba(134, 239, 172, 0.3);
+  color: #15803d;
+}
+.badge-error {
+  background: rgba(248, 113, 113, 0.3);
+  color: #b91c1c;
+}
+.link {
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 600;
+}
+.link:hover {
+  text-decoration: underline;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.data-table th,
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  text-align: left;
+}
+.feature-card {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px dashed rgba(244, 114, 182, 0.4);
+}
+.mood-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.mood-scale {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.mood-dot {
+  border: 1px solid rgba(244, 114, 182, 0.4);
+  padding: 0.35rem;
+  border-radius: 12px;
+  min-width: 32px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #be185d;
+}
+.mood-dot.active {
+  background: rgba(244, 114, 182, 0.2);
+  border-color: rgba(244, 114, 182, 0.7);
+}
+.high-gauge {
+  height: 12px;
+  background: rgba(199, 210, 254, 0.6);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.high-gauge .bar {
+  height: 100%;
+  background: linear-gradient(120deg, #818cf8, #c084fc);
+}
+.sparkline svg {
+  width: 100%;
+  height: 60px;
+}
+.spark-dot {
+  fill: #f472b6;
+}
+.spark-line {
+  stroke: rgba(244, 114, 182, 0.6);
+  stroke-width: 2;
+}
+.spark-labels {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.7rem;
+  color: #a855f7;
+}
+.checkin-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+.trip-card,
+.drug-card {
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  border-radius: 18px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+}
+.checkin-row:hover {
+  border-color: rgba(244, 114, 182, 0.6);
+}
+.feature-card,
+.stat-pill,
+.card {
+  backdrop-filter: blur(6px);
+}

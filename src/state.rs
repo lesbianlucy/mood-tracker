@@ -6,7 +6,7 @@ use sha2::{Digest, Sha512};
 use crate::{
     config::AppConfig,
     db::DbPool,
-    services::{git::GitService, storage::StorageService},
+    services::{git::GitService, matrix::MatrixService, storage::StorageService},
 };
 
 #[derive(Clone)]
@@ -15,11 +15,18 @@ pub struct AppState {
     pub db: DbPool,
     pub storage: StorageService,
     pub git: GitService,
+    pub matrix: MatrixService,
     pub cookie_key: Key,
 }
 
 impl AppState {
-    pub fn new(config: AppConfig, db: DbPool, storage: StorageService, git: GitService) -> Self {
+    pub fn new(
+        config: AppConfig,
+        db: DbPool,
+        storage: StorageService,
+        git: GitService,
+        matrix: MatrixService,
+    ) -> Self {
         let digest = Sha512::digest(config.cookie_secret.as_bytes());
         let cookie_key = Key::from(&digest[..]);
         Self {
@@ -27,6 +34,7 @@ impl AppState {
             db,
             storage,
             git,
+            matrix,
             cookie_key,
         }
     }

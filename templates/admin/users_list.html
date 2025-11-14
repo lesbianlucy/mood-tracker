@@ -1,18 +1,35 @@
 {% extends "base.html" %}
-{% block title %}Admin · Users{% endblock %}
+{% block title %}Userverwaltung{% endblock %}
 {% block content %}
-<section class="space-y-2">
-    <h2 class="text-2xl font-semibold">Alle Accounts</h2>
-    <ul class="space-y-2">
-        {% for user in users %}
-        <li class="bg-white rounded-3xl shadow p-4 flex justify-between">
-            <div>
-                <p class="font-bold">{{ user.username }} ({{ user.role }})</p>
-                <p class="text-sm">{{ user.email }}</p>
-            </div>
-            <a class="text-pink-500" href="/admin/users/{{ user.id }}">Details</a>
-        </li>
-        {% endfor %}
-    </ul>
+<section class="card space-y-4">
+    <h1 class="section-title">Userverwaltung</h1>
+    <div class="overflow-x-auto">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>E-Mail</th>
+                    <th>Rolle</th>
+                    <th>Erstellt</th>
+                    <th>Last Login</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td><a href="/admin/users/{{ user.id }}" class="link">{{ user.username }}</a></td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.created_at }}</td>
+                    <td>{{ user.last_login_at }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-rose-400">Keine Nutzer gefunden.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </section>
 {% endblock %}

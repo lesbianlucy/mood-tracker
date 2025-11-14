@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Einloggen ✨{% endblock %}
 {% block content %}
-<form method="post" action="/login" class="bg-white rounded-3xl shadow p-8 space-y-4">
-    <h2 class="text-2xl font-semibold">Hey, schön dich zu sehen 💕</h2>
-    <label class="block">
-        <span>Nutzername oder E-Mail</span>
-        <input class="mt-1 w-full rounded-full border px-4 py-2" type="text" name="identifier" required>
-    </label>
-    <label class="block">
-        <span>Passwort</span>
-        <input class="mt-1 w-full rounded-full border px-4 py-2" type="password" name="password" required>
-    </label>
-    <button class="w-full rounded-full bg-pink-500 text-white py-3" type="submit">Einloggen ✨</button>
-</form>
+<section class="card">
+    <h1 class="section-title">Willkommen zurück, Süßi 💕</h1>
+    {% if show_error %}
+        <div class="alert alert-error">{{ error_message }}</div>
+    {% endif %}
+    <form method="post" class="form-grid">
+        <label class="form-field">
+            <span>Nutzername oder E-Mail</span>
+            <input type="text" name="identifier" value="{{ identifier }}" required>
+        </label>
+        <label class="form-field">
+            <span>Passwort</span>
+            <input type="password" name="password" required>
+        </label>
+        <button type="submit" class="cta-primary w-full">Einloggen ✨</button>
+    </form>
+    <p class="text-center text-sm text-rose-500">Noch keinen Account? <a href="/register" class="link">Registriere dich 💖</a></p>
+</section>
 {% endblock %}

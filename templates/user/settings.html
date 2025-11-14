@@ -1,9 +1,62 @@
 {% extends "base.html" %}
-{% block title %}Settings ⚙️{% endblock %}
+{% block title %}Einstellungen ⚙️{% endblock %}
 {% block content %}
-<form method="post" action="/me/settings" class="bg-white rounded-3xl shadow p-8 space-y-4">
-    <h2 class="text-2xl font-semibold">Deine Matrix- und Notify-Settings 💞</h2>
-    <p class="text-sm text-pink-400">Skeleton – Felder folgen später.</p>
-    <button class="rounded-full bg-pink-500 text-white px-4 py-2" type="submit">Speichern</button>
-</form>
+<section class="card space-y-4">
+    <div class="flex items-center justify-between">
+        <h1 class="section-title">Einstellungen</h1>
+        {% if status_saved %}
+            <span class="badge badge-success">Gespeichert 💕</span>
+        {% endif %}
+        {% if matrix_ok %}
+            <span class="badge badge-success">Matrix-Test versendet ✨</span>
+        {% endif %}
+        {% if matrix_error %}
+            <span class="badge badge-error">Matrix-Test fehlgeschlagen 😿</span>
+        {% endif %}
+    </div>
+    <form method="post" class="form-grid">
+        <label class="form-field">
+            <span>Anzeigename</span>
+            <input type="text" name="display_name" value="{{ config.display_name }}" required>
+        </label>
+        <label class="form-field">
+            <span>Homeserver URL</span>
+            <input type="url" name="homeserver_url" value="{{ config.homeserver_url }}" required>
+        </label>
+        <label class="form-field">
+            <span>Matrix User ID</span>
+            <input type="text" name="matrix_user_id" value="{{ config.matrix_user_id }}" required>
+        </label>
+        <label class="form-field">
+            <span>Access Token</span>
+            <input type="password" name="matrix_access_token" value="{{ config.matrix_access_token }}" required>
+        </label>
+        <label class="form-field">
+            <span>Device ID</span>
+            <input type="text" name="matrix_device_id" value="{{ matrix_device_id_value }}">
+        </label>
+        <label class="form-field">
+            <span>Primäre Kontaktperson</span>
+            <input type="text" name="primary_contact" value="{{ primary_contact_value }}">
+        </label>
+        <label class="form-field">
+            <span>Notfallkontakte (je Zeile)</span>
+            <textarea name="emergency_contacts" rows="4">{{ emergency_contacts_text }}</textarea>
+        </label>
+        <label class="form-field">
+            <span>Automatisch benachrichtigen</span>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" name="auto_notify_on_low_mood" {% if config.auto_notify_on_low_mood %}checked{% endif %}>
+                <span>wenn Stimmung unter</span>
+                <input type="number" name="auto_notify_threshold" value="{{ config.auto_notify_threshold }}" class="w-16">
+            </div>
+        </label>
+        <div class="flex flex-wrap gap-3">
+            <button type="submit" class="cta-primary">Speichern 💾</button>
+        </div>
+    </form>
+    <form method="post" action="/me/settings/matrix-test">
+        <button class="cta-secondary">Testnachricht senden ✉️</button>
+    </form>
+</section>
 {% endblock %}

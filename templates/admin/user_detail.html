@@ -1,9 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Admin · User Detail{% endblock %}
+{% block title %}User Detail{% endblock %}
 {% block content %}
-<section class="bg-white rounded-3xl shadow p-8 space-y-2">
-    <h2 class="text-2xl font-semibold">{{ user.username }}</h2>
-    <p class="text-sm">UUID: {{ user.uuid }}</p>
-    <p class="text-sm">Role: {{ user.role }}</p>
+<section class="card space-y-4">
+    <h1 class="section-title">{{ user.username }} · {{ user.email }}</h1>
+    <div class="grid md:grid-cols-3 gap-3 text-sm text-rose-600">
+        <div class="stat-pill">
+            <span class="text-xs uppercase tracking-widest text-rose-400">Check-ins</span>
+            <p class="text-2xl text-rose-700">{{ checkin_count }}</p>
+        </div>
+        <div class="stat-pill">
+            <span class="text-xs uppercase tracking-widest text-rose-400">Panic Events</span>
+            <p class="text-2xl text-rose-700">{{ panic_events }}</p>
+        </div>
+        <div class="stat-pill">
+            <span class="text-xs uppercase tracking-widest text-rose-400">Ø Mood</span>
+            <p class="text-2xl text-rose-700">{% if has_mood_avg %}{{ mood_avg_text }}{% else %}–{% endif %}</p>
+        </div>
+    </div>
+    <form method="post" class="flex gap-3 items-center">
+        <label>Rolle ändern:</label>
+        <select name="role" class="flex-1">
+            <option value="user" {% if user.role == "user" %}selected{% endif %}>User</option>
+            <option value="admin" {% if user.role == "admin" %}selected{% endif %}>Admin</option>
+        </select>
+        <button class="cta-secondary">Speichern</button>
+    </form>
 </section>
 {% endblock %}

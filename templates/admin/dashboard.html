@@ -1,8 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard 🛠️{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
 {% block content %}
-<section class="bg-white rounded-3xl shadow p-8 space-y-2">
-    <h2 class="text-2xl font-semibold">Systemüberblick</h2>
-    <p class="text-sm text-pink-400">User Count, Checkins Count, Panic Events – folgen.</p>
+<section class="card space-y-4">
+    <h1 class="section-title">Admin Panel ✨</h1>
+    <div class="grid md:grid-cols-3 gap-4 text-center">
+        <div class="stat-pill">
+            <p class="text-xs uppercase tracking-[0.3em] text-rose-400">User</p>
+            <p class="text-3xl text-rose-700">{{ user_count }}</p>
+        </div>
+        <div class="stat-pill">
+            <p class="text-xs uppercase tracking-[0.3em] text-rose-400">Check-ins</p>
+            <p class="text-3xl text-rose-700">{{ checkin_count }}</p>
+        </div>
+        <div class="stat-pill">
+            <p class="text-xs uppercase tracking-[0.3em] text-rose-400">Panic-Events</p>
+            <p class="text-3xl text-rose-700">{{ panic_count }}</p>
+        </div>
+    </div>
+</section>
+<section class="card space-y-3">
+    <h2 class="text-lg font-semibold text-rose-600">Letzte Panic-Events</h2>
+    <div class="space-y-2">
+        {% for event in panic_events %}
+            <div class="flex justify-between text-sm text-rose-500">
+                <span>{{ event.when }}</span>
+                <span>{{ event.username }} · Mood {{ event.mood_text }}</span>
+            </div>
+        {% else %}
+            <p class="text-rose-400">Keine Panic-Events 🎉</p>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}
