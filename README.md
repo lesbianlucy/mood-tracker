@@ -57,6 +57,11 @@ Cozy Rust webapp (German UI copy) for mood tracking, drug/trip journaling, and s
    ```
 7. **Tailwind build (upcoming):** placeholder CSS sits in `static/app.css`; Node/Tailwind CLI wiring will be added later.
 
+## Continuous Integration
+- **Rust CI** (`.github/workflows/ci.yml`): runs `cargo fmt`, `cargo clippy`, and `cargo test` on pushes/PRs with caching.
+- **PR Gatekeepers** (`.github/workflows/pr-lint.yml`): enforces semantic PR titles and posts a checklist reminder.
+- **PR Size Labels** (`.github/workflows/pr-size.yml`): automatically tags pull requests with size labels (XS–XXL).
+
 ## Next Steps
 - Implement auth flows (register/login) and real session middleware.
 - Fill the JSON storage + Matrix service with full logic.
