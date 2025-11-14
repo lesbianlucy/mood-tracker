@@ -180,6 +180,7 @@ async fn register_user(world: &mut AppWorld, username: String, email: String, pa
 async fn main() {
     AppWorld::cucumber()
         .fail_on_skipped()
+        .with_default_cli()
         .run("tests/features")
         .await;
 }
