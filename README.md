@@ -61,7 +61,7 @@ Cozy Rust webapp (German UI copy) for mood tracking, drug/trip journaling, and s
 - **Rust CI** (`.github/workflows/ci.yml`): runs `cargo fmt`, `cargo clippy`, and `cargo test` on pushes/PRs with caching.
 - **PR Gatekeepers** (`.github/workflows/pr-lint.yml`): enforces semantic PR titles and posts a checklist reminder.
 - **PR Size Labels** (`.github/workflows/pr-size.yml`): automatically tags pull requests with size labels (XS–XXL).
-- **PR Category Check** (`.github/workflows/pr-category.yml`): ensures each PR description declares a `Category:`.
+- **PR Category Label** (`.github/workflows/pr-category.yml`): infers category labels (`category/<type>`) straight from the semantic PR title.
 - **Breaking Change Label** (`.github/workflows/breaking-change.yml`): syncs the `breaking-change` label when the PR title/body mentions `BREAKING CHANGE`.
 - **First-Time Contributor Welcome** (`.github/workflows/first-time-contributor.yml`): greets new contributors with guidance.
 - **New Account Label** (`.github/workflows/new-account-label.yml`): labels PRs from GitHub accounts younger than 30 days.

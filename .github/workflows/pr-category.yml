@@ -1,4 +1,4 @@
-name: PR Category Check
+name: PR Category Label
 
 on:
   pull_request:
@@ -10,24 +10,62 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Validate category in PR description
+      - name: Ensure category label matches PR title
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
-            const body = pr.body || '';
+            const title = pr.title || '';
 
-            const match = body.match(/Category:\s*(.+)/i);
-            if (!match || !match[1].trim()) {
-              core.setFailed('Missing `Category:` entry in PR description.');
+            const match = title.match(/^([a-zA-Z]+)(?:\([^)]*\))?:/);
+            if (!match) {
+              core.setFailed('Unable to infer category. Please use a semantic PR title like `feat(ui): add button`.');
               return;
             }
 
-            const value = match[1].trim();
-            if (value.toLowerCase() === 'tbd') {
-              core.setFailed('Please replace `Category: TBD` with a specific category (e.g. feature, bugfix, infra).');
-              return;
+            const category = match[1].toLowerCase();
+            const labelName = `category/${category}`;
+
+            async function ensureLabel() {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: labelName,
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: labelName,
+                    color: '5319e7',
+                    description: `Category inferred from PR title (${category})`,
+                  });
+                } else {
+                  throw error;
+                }
+              }
             }
 
-            core.info(`Category detected: ${value}`);
+            const { data: existing } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+            });
+
+            const labels = existing
+              .map((label) => label.name)
+              .filter((name) => !name.startsWith('category/'));
+            labels.push(labelName);
+
+            await ensureLabel();
+            await github.rest.issues.setLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels,
+            });
+
+            core.info(`Applied ${labelName} based on PR title.`);
